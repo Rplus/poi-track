@@ -1,38 +1,24 @@
 support-for-ie = false
 
 @import nib
-@import 'normalize'
+// @import 'normalize'
 
 $trackRadius = 75px
 $poiSize     = 10px
 $poiColor    = #ff0
-$shadowColor = #ff9
+$shadowColor = darken(#ff9, 80%)
 $spinTime    = 3s
+$fireLayer   = 6
 
-$poiTrack {
-  width: $trackRadius * 2
-  height: $trackRadius * 2
-  display: inline-block
-  // background-color: rgba(red, .1)
-  border-radius: 50%
-  position: relative
-  // transform: scaleX(.8)
-}
+// 3D
+$viewDeg_left  = 70deg
+$viewDeg_diff  = 30deg
+$viewDeg_right = $viewDeg_left
 
-$poi {
-  content: ''
-  position: absolute
-  top: ($trackRadius) - ($poiSize / 2)
-  width: $poiSize
-  height: $poiSize
-  border-radius: 50%
-  background-color: $poiColor
-  animation-duration: $spinTime
-  animation-timing-function: linear
-  animation-iteration-count: infinite
-}
+$poiRadius   = ($poiSize / 2)
+$trackLength = $trackRadius * 2
 
-colletShadow(dir = 1, layers = 3) {
+fire(dir = 1, layers = 3) {
   $str = ''
   for i in (1..layers) {
     $x = unit(dir * i * i - 1, px)
@@ -45,98 +31,105 @@ colletShadow(dir = 1, layers = 3) {
   return unquote($str)
 }
 
-$fire {
-  box-shadow: colletShadow(-1, 5)
+$poiTrack {
+  width: $trackLength
+  height: $trackLength
+  display: inline-block
+  border-radius: 50%
+  position: relative
+  // transform: scaleX(.8)
 }
 
-$fire_r {
-  box-shadow: colletShadow(1, 5)
-}
+$poi {
+  content: ''
+  width: $poiSize
+  height: $poiSize
 
-$poi_l {
-  @extend $poi
-  @extend $fire
-  right: 0
-  transform-origin: ($poiSize - $trackRadius) ($poiSize / 2)
+  position: absolute
+  left: $trackLength - $poiRadius
+  top: $trackRadius - $poiRadius
+
+  border-radius: 50%
+  background-color: $poiColor
+
+  transform-origin: ($poiRadius - $trackRadius) ($poiRadius)
   transform: rotate(0deg)
-}
-$poi_r {
-  @extend $poi
-  @extend $fire_r
-  left: 0
-  transform: rotate(360deg * 6)
-  transform-origin: ($trackRadius) ($poiSize / 2)
-  opacity: 0
+
+  animation-duration: $spinTime
+  animation-timing-function: linear
+  animation-iteration-count: infinite
 }
 
 #loader {
-  width: $trackRadius * 4
-  height: $trackRadius * 2
-  // background-color: rgba(red, .1)
-  // remove space between inline-block(s)
-  font-size: 0
-  // test
+  width: $trackLength * 2
+  height: $trackLength
   margin: 50px auto
-  position: relative
-  .l {
+  box-sizing: border-box
+  // position: relative
+  .poi {
     @extend $poiTrack
-    transform: rotateY(100deg)
-    transform-origin: 100% 0
-    position: absolute
-    right: $trackRadius * 2 - ($poiSize / 4)
+    position: relative
     &:before {
-      @extend $poi_l
+      @extend $poi
       animation-name: spin-21
     }
     &:after {
-      @extend $poi_l
+      @extend $poi
       animation-name: spin-12
-      animation-delay: (round($spinTime * 1000 / 6) / 1000)
-      opacity: 0
-    }
-  }
-  .r {
-    @extend $poiTrack
-    transform: rotateY(-60deg)
-    transform-origin: 0 0
-    position: absolute
-    left: $trackRadius * 2 - ($poiSize / 4)
-    &:before {
-      @extend $poi_r
-      animation-name: spin-21
-      animation-delay: (round($spinTime * 3000 / 6) / 1000)
-    }
-    &:after {
-      @extend $poi_r
-      animation-name: spin-12
-      animation-delay: (round($spinTime * 4000 / 6) / 1000)
+      animation-delay: ( round($spinTime * 1000 / 6) / 1000 )
     }
   }
 }
 
 @keyframes spin-21 {
-  0%    { opacity: 1 }
-  // 16.6% { opacity: 1 }
-  // 33.2% { opacity: 1 }
-  // 50.0% { opacity: 1 }
-  66.6% { opacity: 1 }
-  66.7%{ opacity: 0 }
-  // 83.2% { opacity: 0 }
-  100%  { transform:rotate(360deg * 3); opacity: 0 }
+  0%    { transform: rotate(0deg);
+          transform-origin: ($poiRadius - $trackRadius) ($poiRadius);
+          box-shadow: fire(-1, $fireLayer)}
+  // 16.6% { }
+  // 33.2% { }
+  // 50.0% { }
+  66.6% { transform: rotate(360deg * 2);
+          transform-origin: ($poiRadius - $trackRadius) ($poiRadius);
+          box-shadow: fire(-1, $fireLayer)}
+  66.7% { transform: rotate(360deg * 2);
+          transform-origin: ($trackRadius + $poiRadius) ($poiRadius);
+          box-shadow: fire(1, $fireLayer)}
+  // 83.2% { }
+  100%  { transform: rotate(360deg * 1);
+          transform-origin: ($trackRadius + $poiRadius) ($poiRadius);
+          box-shadow: fire(1, $fireLayer)}
 }
 
 @keyframes spin-12 {
-  0%    { opacity: 1 }
-  // 16.6% { opacity: 1 }
-  33.2% { opacity: 1 }
-  33.3%{ opacity: 0 }
-  // 50.0% { opacity: 0 }
-  // 66.6% { opacity: 0 }
-  // 83.2% { opacity: 0 }
-  100%  { transform:rotate(360deg * 3); opacity: 0 }
+  0%    { transform: rotate(0deg);
+          transform-origin: ($poiRadius - $trackRadius) ($poiRadius);
+          box-shadow: fire(-1, $fireLayer)}
+  // 16.6% { }
+  33.2% { transform: rotate(360deg * 1);
+          transform-origin: ($poiRadius - $trackRadius) ($poiRadius);
+          box-shadow: fire(-1, $fireLayer)}
+  33.3% { transform: rotate(360deg * 1);
+          transform-origin: ($trackRadius + $poiRadius) ($poiRadius);
+          box-shadow: fire(1, $fireLayer)}
+  // 50.0% { }
+  // 66.6% { }
+  // 83.2% { }
+  100%  { transform: rotate(360deg * -1);
+          transform-origin: ($trackRadius + $poiRadius) ($poiRadius);
+          box-shadow: fire(1, $fireLayer)}
 }
-
 
 body {
   background: #000
+}
+
+$degug = !true
+if $degug {
+  #loader {
+    border-right: $trackLength solid rgba(red, .1)
+    background-color: rgba(red, .1)
+  }
+  .poi {
+    background-color: rgba(red, .1)
+  }
 }
