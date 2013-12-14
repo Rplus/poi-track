@@ -6,13 +6,13 @@ support-for-ie = false
 $trackRadius = 75px
 $poiSize     = 10px
 $poiColor    = #ff0
-$poiColor2   = #00f
+$poiColor2   = #66f
 $spinTime    = 3s
 $fireLayer   = 6
 
 // 3D
-$viewDeg1 = 150deg
-$viewDeg2 = 110deg
+$viewDeg1 = 120deg
+$viewDeg2 = 100deg
 
 // calculation
 $poiRadius   = ($poiSize / 2)
@@ -21,7 +21,7 @@ $delayTime   = ( round($spinTime * 1000 / 6) / 1000 )
 
 fire(layers = 3, $color = $poiColor) {
   $str = ''
-  $color = darken($color, 80%)
+  $color = lighten($color, 20%)
   if layers != 0 {
     for i in (1..layers) {
       $x = unit(-1 * i * i - 1, px)
