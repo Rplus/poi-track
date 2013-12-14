@@ -1,0 +1,145 @@
+support-for-ie = false
+
+@import nib
+@import 'normalize'
+
+$trackRadius = 75px
+$poiSize     = 10px
+$poiColor    = #ff0
+$shadowColor = #ffc
+
+
+body {
+  background: #000
+}
+
+$poi {
+  content: ''
+  position: absolute
+  top: ($trackRadius) - ($poiSize / 2)
+  left: 0
+  width: $poiSize
+  height: $poiSize
+  border-radius: 50%
+  background-color: $poiColor
+  transform-origin: $trackRadius $poiSize
+  animation-duration: 3s
+  animation-timing-function: linear
+  animation-iteration-count: infinite
+  // transition: all .5s
+}
+
+colletShadow(dir = 1, layers = 3) {
+  $str = ''
+  for i in (1..layers) {
+    $x = unit(dir * i - 1, px)
+    $y = unit(dir * i * 6, px)
+    $b = unit(i * 5, px)
+    $sc = '' + $shadowColor + ( (i < layers)?', ':';' )
+
+    $str += $x $y $b 0 $sc
+  }
+  return unquote($str)
+}
+
+$fire {
+  box-shadow: colletShadow(1, 6)
+}
+
+$firer {
+  box-shadow: colletShadow(-1, 6)
+}
+
+#loader {
+  width: $trackRadius * 4
+  height: $trackRadius * 2
+  // background-color: rgba(red, .1)
+  // remove space between inline-block(s)
+  font-size: 0
+  // test
+  margin: 50px auto
+  .r, .l {
+    width: $trackRadius * 2
+    height: $trackRadius * 2
+    display: inline-block
+    border-radius: 50%
+    position: relative
+    &:after {
+      @extend $poi
+    }
+    &:before {
+      @extend $poi
+      transform: rotate(180deg)
+    }
+  }
+  .l {
+    &:before {
+      @extend $fire
+      // background-color: #ff0
+      animation-name: spin-lb
+    }
+    &:after {
+      @extend $fire
+      // background-color: #f00
+      animation-name: spin-la
+    }
+  }
+  .r {
+    margin-left: -8px
+    &:before {
+      @extend $firer
+      animation-name: spin-rb
+      // background-color: #00f
+    }
+    &:after {
+      @extend $firer
+      animation-name: spin-ra
+    }
+  }
+}
+
+@keyframes spin-lb { // yellow
+  0%    { transform:rotate(180deg); opacity: 1 }
+  // 16.6% { opacity: 1 }
+  33.2% { opacity: 1 }
+  33.3% { opacity: 0 }
+  // 50.0% { opacity: 0 }
+  // 66.6% { opacity: 0 }
+  // 83.2% { opacity: 0 }
+  100%  { transform:rotate(1260deg); opacity: 0 }
+}
+
+@keyframes spin-la { // red
+  0%    { transform:rotate(0deg); opacity: 1 }
+  // 16.6% { opacity: 1 }
+  // 33.2% { opacity: 1 }
+  50.0% { opacity: 1 }
+  50.1% { opacity: 0 }
+  // 66.6% { opacity: 0 }
+  83.2% { opacity: 0 }
+  83.3% { opacity: 1 }
+  100%  { transform:rotate(1080deg); opacity: 1 }
+}
+
+@keyframes spin-rb { // blue
+  0%    { transform:rotate(180deg); opacity: 0 }
+  // 16.6% { opacity: 0 }
+  // 33.2% { opacity: 0 }
+  50.0% { opacity: 0 }
+  50.1% { opacity: 1 }
+  // 66.6% { opacity: 1 }
+  83.2% { opacity: 1 }
+  83.3% { opacity: 0 }
+  100%  { transform:rotate(-900deg); opacity: 0 }
+}
+
+@keyframes spin-ra { // white
+  0%    { transform:rotate(0deg); opacity: 0 }
+  // 16.6% { opacity: 0 }
+  33.2% { opacity: 0 }
+  33.3% { opacity: 1 }
+  // 50.0% { opacity: 1 }
+  // 66.6% { opacity: 1 }
+  // 83.2% { opacity: 1 }
+  100%  { transform:rotate(-1080deg); opacity: 1 }
+}
